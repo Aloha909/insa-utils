@@ -24,7 +24,8 @@ def get_menu_for_day(date):
     weekday = get_weekday(date)
     print(f"Requesting menu for {date} (weekday: {weekday})")
 
-    # heure = {"midi_semaine": 32, "soir_semaine": 38, "midi_samedi": 123, "midi_dimanche": 125, "soir_dimanche": 126}
+    # heure_ri = {"midi_semaine": 32, "soir_semaine": 38, "midi_samedi": 123, "midi_dimanche": 125, "soir_dimanche": 126}
+    # heure_olivier = {"midi_semaine": 2, "soir_semaine": 57}
     # resto = {"olivier" : 6, "RI": 4}
     if weekday <= 4:
         ri_lunch = get_menu_for_meal(date, 4, 32)
@@ -36,19 +37,23 @@ def get_menu_for_day(date):
         ri_lunch = get_menu_for_meal(date, 4, 125)
         ri_dinner = get_menu_for_meal(date, 4, 126)
 
-    olivier = get_menu_for_meal(date, 6, 2) if weekday <= 4 else None
-
+    olivier_lunch = get_menu_for_meal(date, 6, 2) if weekday <= 4 else None
+    
+    olivier_dinner = get_menu_for_meal(date, 6, 57) if weekday == 3 else None
+    if olivier_dinner == {"entree": [], "plat": [], "sauce": [], "garniture": [], "fromage": [], "dessert": []}:
+        olivier_dinner = None
+    
     return {
         "date": {"day": datetime.datetime.fromisoformat(date).day,
                  "month": datetime.datetime.fromisoformat(date).month},
-        "is_empty": ri_lunch is None and ri_dinner is None and olivier is None,
+        "is_empty": ri_lunch is None and ri_dinner is None and olivier_lunch is None and olivier_dinner is None,
         "lunch": {
             "ri": ri_lunch,
-            "olivier": olivier,
+            "olivier": olivier_lunch,
         },
         "dinner": {
             "ri": ri_dinner,
-            "olivier": None
+            "olivier": olivier_dinner
         }
     }
 
